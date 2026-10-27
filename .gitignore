@@ -1,0 +1,9 @@
+bin/
+obj/
+dist/
+.deps/
+mise.local.toml
+*.user
+.DS_Store
+.harness/
+__pycache__/

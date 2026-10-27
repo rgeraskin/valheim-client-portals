@@ -1,0 +1,80 @@
+[size=4][b]Description[/b][/size]
+Pick your portal destination from a list or on the map. No more tag pairing, no more portal hubs. Learn portals by exploring, and [b]share them with your friends at the cartography table[/b]. Fully playable with a [b]gamepad[/b] (Steam Deck included), and built from the game's own UI, so it looks and sounds like part of Valheim.
+
+[b]100% client-side.[/b] Nothing to install on the server: it works on any dedicated server, on a friend's local host and in single player, and the other players don't need it either.
+
+[b]In your language.[/b] Translated into all 35 languages the game ships, following its language setting (or the mod's own Language setting).
+
+[img]https://raw.githubusercontent.com/rgeraskin/valheim-client-portals/master/package/gallery/1-list-gamepad.jpg[/img]
+
+[img]https://raw.githubusercontent.com/rgeraskin/valheim-client-portals/master/package/gallery/2-map-view.jpg[/img]
+
+[size=4][b]How it works[/b][/size]
+Look at any portal and press [b]Q[/b] (on a gamepad: tap [b]L3[/b]), or walk into an unpaired portal. The portals you know open in a list: pick one and you are there. Unpaired portals swirl like paired ones once you know somewhere to go, and vanilla tag pairs keep working as usual.
+
+You learn a portal by:
+[list]
+[*][b]Visiting it[/b]: get within 20 m of a portal.
+[*][b]Tag pairs[/b]: get close to a vanilla tag-paired portal and you also learn the one on the other side, without going through.
+[*][b]Cartography table[/b]: read the map to learn every portal recorded on the table, write it to record yours.
+[/list]
+Single player and local hosts know every portal in the world from the start (configurable).
+
+[size=4][b]The list[/b][/size]
+Search by name, sort by name or distance, and star your favorites to keep them on top. The [b]All[/b], [b]Favorites[/b] and [b]Ignored[/b] tabs switch between them. The [b]…[/b] mark (F2) renames a portal from afar: a tag pair is renamed at both ends, so it stays connected.
+
+Portal rooms fill a list with portals you never want to pick:
+[list]
+[*][b]Ignore[/b] a portal to move it to the [b]Ignored[/b] tab (and back the same way). Unnamed portals count as one: ignoring one ignores them all.
+[*][b]Same names[/b] (on by default): of portals sharing a name, only the one farthest away is shown. In your portal room, that's the far end of each tag pair.
+[*][b]HideNearby[/b] hides every portal close to the one you use.
+[/list]
+Controls (mouse / keyboard, then gamepad):
+[list]
+[*]Pick a portal: hover, or Up/Down (PageUp/PageDown) / D-pad or left stick (triggers jump a page)
+[*]Travel: click, or Enter / A
+[*]Favorite: click the star, or Insert / Y
+[*]Ignore (or stop ignoring): the ⊘ mark, middle-click, or Delete / R3
+[*]Rename: the … mark, or F2
+[*]Tabs: click, or Left/Right / LB/RB or D-pad left/right
+[*]Sort by name, nearest or farthest: the Sort button / X
+[*]Map view (the search goes along): Tab, or the Map view button / the map button
+[*]Clear the search, then close: Esc / B
+[/list]
+
+[size=4][b]Map view[/b][/size]
+Tab (or [b]Map view[/b]) turns the list into the game map with every portal you know on it, even in areas you haven't explored, its name written underneath ([b]Portal names[/b]). Hover a portal for its name and distance, click it to travel, right-click it for a favorite, middle-click it to ignore it. [b]Only portals[/b] hides the map's other pins. The search works here too: the map zooms to the matching portals, and Enter travels when only one is left. Tab or the map key goes back to the list, Esc clears the search and then closes. The view you used last opens next time.
+
+With a gamepad, move a portal under the crosshair (LB/RB jump from portal to portal): A travels, Y marks a favorite, R3 ignores, X shows only portals, L3 the names, the triggers zoom, B clears the search and then cancels.
+
+[img]https://raw.githubusercontent.com/rgeraskin/valheim-client-portals/master/package/gallery/5-map-search.jpg[/img]
+
+[size=4][b]Cartography table: a shared atlas of portals[/b][/size]
+The cartography table already shares the explored map. With ClientPortals it also keeps an [b]atlas of portals[/b]: [b]Write map[/b] records every portal you know, [b]Read map[/b] teaches you every portal recorded there, and the table's hover text shows how many it holds. Destroyed portals leave your list, and the table the next time you write to it. Players without the mod share the map as usual.
+
+[size=4][b]Optional extras (off by default)[/b][/size]
+[list]
+[*][b]Rename both ends of a pair[/b] (RenameBoth): Shift + E at a paired portal (on a gamepad: alt + use) renames both ends at once, so the pair stays connected, also for players without the mod. Off while TagConnectedPortals is installed.
+[*][b]Names above portals[/b] (Labels): each portal's name floats above it, hidden behind walls and far away; PageUp shows or hides them. Off while Teleporter Overhead Text is installed.
+[/list]
+
+[size=4][b]Installation instructions[/b][/size]
+[list]
+[*]With Vortex: click "Mod Manager Download".
+[*]By hand: unpack the archive into the Valheim folder, so that the files end up in [b]BepInEx/plugins/ClientPortals[/b].
+[/list]
+Needs [url=https://www.nexusmods.com/valheim/mods/3605]BepInExPack Valheim[/url]. Only you need ClientPortals: not the server, not the other players.
+
+Settings: [b]BepInEx/config/rgeraskin.ClientPortals.cfg[/b], or in the game with [url=https://thunderstore.io/c/valheim/p/Azumatt/Official_BepInEx_ConfigurationManager/]Configuration Manager[/url] (F1). Every setting is your own: nothing comes from the server. The full list is in the [url=https://github.com/rgeraskin/valheim-client-portals#configuration]README[/url].
+
+Tested on Valheim 1.0.21 with BepInExPack 5.4.2351, in single player on Windows and macOS, with keyboard and mouse and with a gamepad.
+
+[size=4][b]Credits[/b][/size]
+[list]
+[*]Inspired by [url=https://www.nexusmods.com/valheim/mods/4147]EasyPortal[/url] (hrossow), also client-side. ClientPortals is the same idea written from scratch: open source, full gamepad support, 35 languages, a map view you can switch to with search and portal names, ignoring portals, renaming from the list, a redesigned interface built from the game's own UI, etc.
+[*]The names above portals take their settings from Teleporter Overhead Text (ModdedWolf), and renaming both ends follows TagConnectedPortals (Neobotics).
+[/list]
+
+This mod was made entirely with AI, and tested in the game.
+
+Source code and issues: [url=https://github.com/rgeraskin/valheim-client-portals]GitHub[/url] (MIT).

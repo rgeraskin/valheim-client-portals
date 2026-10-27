@@ -1,0 +1,38 @@
+{
+  "thunderstore": {
+    "url": "https://thunderstore.io",
+    "team": "rgeraskin",
+    "community": "valheim",
+    "categories": [
+      "mods",
+      "client-side",
+      "transportation",
+      "utility",
+      "deep-north-update"
+    ]
+  },
+  "hexium": {
+    "url": "https://valheim.hexium.gg",
+    "team": "rgeraskin",
+    "community": "valheim",
+    "categories": [
+      "Client-only",
+      "Transportation",
+      "Quality of Life",
+      "User Interface",
+      "Controller-support",
+      "Open Source",
+      "Valheim 1.0"
+    ],
+    "installLocation": "client"
+  },
+  "nexus": {
+    "url": "https://api.nexusmods.com",
+    "game": "valheim",
+    "modId": 4751,
+    "modFileId": "8291019",
+    "pageDescription": "package/nexus-description.bbcode",
+    "name": "ClientPortals {version}",
+    "description": "ClientPortals {version}: the plugin. Needs BepInExPack Valheim. Client-side: install it on your game only, nothing on the server."
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "ClientPortals",
+  "version_number": "0.1.0",
+  "website_url": "https://github.com/rgeraskin/valheim-client-portals",
+  "description": "Client-side: nothing to install on the server. Pick a portal destination from a list or the map. Full gamepad support, game-native UI, translated into all 35 game languages. Share portals at the cartography table. Open source.",
+  "dependencies": [
+    "denikson-BepInExPack_Valheim-5.4.2351"
+  ]
+}
