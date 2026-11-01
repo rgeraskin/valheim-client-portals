@@ -187,6 +187,14 @@ static async Task PublishHexium(HttpClient http, JsonNode site, Release release,
     // Hidden versions (every upload until it is unhidden on hexium.gg) do not show here: the upload is refused then.
     await NotThereYet(http, Name, $"{url}/api/experimental/package/{team}/{release.Name}/{release.Version}/");
     await CategoriesExist(http, Name, $"{url}/api/experimental/community/{community}/category/", "name", categories);
+    // The install-location labels are in the category list, but set-metadata refuses them as categories ("Unknown
+    // category"): installLocation sets them.
+    string[] locations = [.. categories.Where(c => c.StartsWith("Client", StringComparison.Ordinal) || c.StartsWith("Server", StringComparison.Ordinal))];
+    if (locations.Length > 0)
+    {
+        throw new InvalidOperationException($"{Name}: {string.Join(", ", locations)} is an install location, not a category: drop it from tools/release/sites.json (installLocation sets it).");
+    }
+
     if (dryRun)
     {
         // Hexium has no endpoint that only checks a token: an upload begun and called off checks it.
