@@ -37,6 +37,9 @@ public class Harness : BaseUnityPlugin
     static string Env(string name, string fallback) => Environment.GetEnvironmentVariable(name) is { Length: > 0 } v ? v : fallback;
     static string CharName => Env("CLIENTPORTALS_CHAR", "PortalTester");
     static string WorldName => Env("CLIENTPORTALS_WORLD", "PortalTest");
+    /// <summary>host:port of a dedicated server to join instead of loading a local world (multiplayer tests).</summary>
+    static string JoinAddress => Env("CLIENTPORTALS_JOIN", "");
+    static string JoinPassword => Env("CLIENTPORTALS_PASSWORD", "");
 
     void Awake()
     {
@@ -64,8 +67,19 @@ public class Harness : BaseUnityPlugin
         Logger.LogInfo(msg);
     }
 
+    ZNet.ConnectionStatus lastNet = ZNet.ConnectionStatus.None;
+
+    static bool NetError(ZNet.ConnectionStatus s) => s >= ZNet.ConnectionStatus.ErrorVersion;
+
     void Update()
     {
+        // every change of the game's connection status, so a script sees "net: ErrorConnectFailed" instead of a timeout
+        var net = ZNet.GetConnectionStatus();
+        if (net != lastNet)
+        {
+            Log((NetError(net) ? "! " : "") + "net: " + net);
+            lastNet = net;
+        }
         var player = Player.m_localPlayer;
         if (player && keepHealth && player.GetHealth() < player.GetMaxHealth()) player.SetHealth(player.GetMaxHealth());
     }
@@ -74,7 +88,10 @@ public class Harness : BaseUnityPlugin
     {
         while (FejdStartup.instance == null || FejdStartup.instance.m_profiles == null) yield return new WaitForSeconds(0.5f);
         yield return new WaitForSeconds(2f);
-        if (Env("CLIENTPORTALS_AUTOSTART", "") == "1") StartWorld();
+        if (Env("CLIENTPORTALS_AUTOSTART", "") == "1")
+        {
+            yield return JoinAddress.Length > 0 ? JoinWorld(JoinAddress) : StartWorld();
+        }
         while (true)
         {
             yield return new WaitForSeconds(0.3f);
@@ -123,8 +140,11 @@ public class Harness : BaseUnityPlugin
 
     // ------------------------------------------------------------------ world and character
 
-    void StartWorld()
+    // the harness's own character, created if missing and selected; false when the game picked another (never play it).
+    // As valheim-dev-harness: a character made a moment ago isn't in the game's list until its caches are dropped.
+    IEnumerator SelectCharacter(Action<bool> done)
     {
+        done(false);
         var fs = FejdStartup.instance;
         var file = CharName.ToLowerInvariant();
         var profile = new PlayerProfile(file, FileHelpers.FileSource.Local);
@@ -140,15 +160,52 @@ public class Harness : BaseUnityPlugin
             profile.m_firstSpawn = false;
             profile.Save();
         }
-        fs.UpdateCharacterList();
+        float until = Time.realtimeSinceStartup + 15f;
+        while (true)
+        {
+            // UpdateCharacterList only fills a null list, from a cached list of save files
+            SaveSystem.InvalidateCache();
+            fs.m_profiles = null;
+            fs.UpdateCharacterList();
+            if (fs.m_profiles.Any(p => p.GetFilename() == file) || Time.realtimeSinceStartup > until) break;
+            yield return new WaitForSecondsRealtime(0.5f);
+        }
         fs.SetSelectedProfile(file);
         // a profile the game hasn't listed falls back to the first one: never play (and save) someone's real character
         var selected = fs.m_profiles.Count > fs.m_profileIndex && fs.m_profileIndex >= 0 ? fs.m_profiles[fs.m_profileIndex] : null;
         if (selected == null || selected.GetFilename() != file)
         {
             Log($"! the game selected '{selected?.GetName()}' instead of {CharName}: not starting");
-            return;
+            yield break;
         }
+        done(true);
+    }
+
+    // joins a dedicated server like the game's -joinserverwithcharacter and -password options
+    IEnumerator JoinWorld(string address)
+    {
+        bool ok = false;
+        yield return SelectCharacter(v => ok = v);
+        if (!ok) yield break;
+        var fs = FejdStartup.instance;
+        FejdStartup.ServerPassword = JoinPassword.Length > 0 ? JoinPassword : null;
+        fs.m_joinServer = new ServerJoinData(new ServerJoinDataDedicated(address));
+        // the last attempt's error stays until the next one sets a status: waitplayer would read it as this one's
+        ZNet.m_externalError = ZNet.ConnectionStatus.None;
+        ZNet.m_connectionStatus = ZNet.ConnectionStatus.None;
+        // hands the character to the game (choosing it in the menu isn't enough): without it the game plays its
+        // developer profile "Odev"
+        fs.SelectCharacter(CharName.ToLowerInvariant(), FileHelpers.FileSource.Local);
+        fs.JoinServer();
+        Log($"joining {address} as {CharName}");
+    }
+
+    IEnumerator StartWorld()
+    {
+        bool ok = false;
+        yield return SelectCharacter(v => ok = v);
+        if (!ok) yield break;
+        var fs = FejdStartup.instance;
         fs.OnCharacterStart();
         var world = World.GetCreateWorld(WorldName, FileHelpers.FileSource.Local);
         if (!World.HaveWorld(WorldName))
@@ -172,15 +229,25 @@ public class Harness : BaseUnityPlugin
         var player = Player.m_localPlayer;
         switch (cmd)
         {
-            case "start": StartWorld(); break;
+            case "start": yield return StartWorld(); break;
+            case "join": yield return JoinWorld(a.Length > 0 ? a[0] : JoinAddress); break;
             case "wait": yield return new WaitForSeconds(F(a[0])); break;
             case "frames":
                 for (int i = 0; i < (int)F(a[0]); i++) yield return null;
                 break;
             case "waitplayer":
-                while (!Player.m_localPlayer || Player.m_localPlayer.IsTeleporting() || Player.m_localPlayer.InIntro()) yield return new WaitForSeconds(0.5f);
-                Log("player ready at " + Player.m_localPlayer.transform.position);
-                break;
+                {
+                    // waitplayer [timeout s = 180]: a join that fails leaves the game in the menu, and the harness must not wait forever
+                    float until = Time.realtimeSinceStartup + (a.Length > 0 ? F(a[0]) : 180f);
+                    // ends at once when the game reports a connection error (failed join, kicked, wrong password)
+                    while ((!Player.m_localPlayer || Player.m_localPlayer.IsTeleporting() || Player.m_localPlayer.InIntro()) && Time.realtimeSinceStartup < until
+                           && !NetError(ZNet.GetConnectionStatus()))
+                        yield return new WaitForSecondsRealtime(0.5f);
+                    if (Player.m_localPlayer) Log("player ready at " + Player.m_localPlayer.transform.position);
+                    else if (NetError(ZNet.GetConnectionStatus())) Log("! no player: connection " + ZNet.GetConnectionStatus());
+                    else Log("! no player after the timeout");
+                    break;
+                }
             case "god":
                 player.SetGodMode(true);
                 EnvMan.instance.m_debugTimeOfDay = true;
@@ -223,6 +290,15 @@ public class Harness : BaseUnityPlugin
                     // altuse: alt + use at the nearest portal (Shift + E): renames both ends of a pair with RenameBoth
                     var portal = NearestPortal();
                     Log(portal ? $"interact (alt) with {Tag(portal)}: {portal.Interact(player, false, true)}" : "no portal within 8 m");
+                    break;
+                }
+            case "renameboth":
+                {
+                    // renameboth: the mod's rename-both-ends dialog at the nearest portal (what RenameKey / alt + use on a
+                    // gamepad open); altuse with the keyboard opens the game's own dialog
+                    var portal = NearestPortal();
+                    if (portal) PairRename.Open(portal);
+                    Log(portal ? $"rename both at {Tag(portal)}: dialog {(TextInput.IsVisible() ? "open" : "not open")}" : "no portal within 8 m");
                     break;
                 }
             case "walkin":
@@ -371,6 +447,7 @@ public class Harness : BaseUnityPlugin
                         if (go.GetComponent<TreeBase>() || go.GetComponent<TreeLog>() || go.GetComponent<Destructible>() ||
                             go.GetComponent<MineRock>() || go.GetComponent<MineRock5>() || go.GetComponent<Pickable>())
                         {
+                            nv.ClaimOwnership(); // in multiplayer only the owner's destroy reaches the others
                             ZNetScene.instance.Destroy(go);
                             n++;
                         }
@@ -526,6 +603,14 @@ public class Harness : BaseUnityPlugin
                     Log($"ghost '{tag}' at {pos}");
                     break;
                 }
+            case "zdoinfo":
+                {
+                    // zdoinfo [name prefix]: the network state of loaded portals (owner, revisions, pair link)
+                    var prefix = string.Join(" ", a);
+                    foreach (var z in PortalWorld.Loaded().Where(z => PortalWorld.IsPortal(z) && PortalWorld.Tag(z).StartsWith(prefix)))
+                        Log($"'{PortalWorld.Tag(z)}' {z.GetPosition()} id={z.m_uid} owner={z.GetOwner()} me={ZDOMan.GetSessionID()} rev={z.OwnerRevision}/{z.DataRevision} conn={z.GetConnectionZDOID(ZDOExtraData.ConnectionType.Portal)}");
+                    break;
+                }
             case "destroyportal":
                 {
                     // destroyportal <name...>: destroys that portal object wherever it is, like another player far away
@@ -534,7 +619,13 @@ public class Harness : BaseUnityPlugin
                     if (zdo == null) { Log("no portal " + tag); break; }
                     var at = zdo.GetPosition();
                     var view = ZNetScene.instance.FindInstance(zdo);
-                    if (view) ZNetScene.instance.Destroy(view.gameObject);
+                    // only the owner's destroy reaches the server (and from there every client): a player removing a
+                    // piece takes it over first, as here
+                    if (view)
+                    {
+                        view.ClaimOwnership();
+                        ZNetScene.instance.Destroy(view.gameObject);
+                    }
                     else
                     {
                         zdo.SetOwner(ZDOMan.GetSessionID());

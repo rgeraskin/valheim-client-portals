@@ -23,11 +23,16 @@ if (Get-Process valheim -ErrorAction SilentlyContinue) {
 Remove-Item D:\ClientPortalsTest\harness\cmd.txt -ErrorAction SilentlyContinue
 Start-Sleep 2
 EOS
+# a game still running has the DLLs loaded: overwriting them corrupts it, and a second game would share cmd.txt
+left=$($W <<< "@(Get-Process valheim -ErrorAction SilentlyContinue).Count" | tr -d '\r')
+[ "$left" = 0 ] || { echo "the test game didn't stop ($left running): not copying or starting" >&2; exit 4; }
 scp -q -o LogLevel=ERROR "$R/ClientPortals/bin/Release/ClientPortals.dll" "$CLIENTPORTALS_REMOTE:D:/ClientPortalsTest/BepInEx/plugins/ClientPortals/"
 scp -q -o LogLevel=ERROR "$R/tools/DevHarness/bin/Release/ClientPortalsDevHarness.dll" "$CLIENTPORTALS_REMOTE:D:/ClientPortalsTest/BepInEx/plugins/ClientPortalsDevHarness/"
+# only lines the new game writes count (an old "joining" line would end the wait at once)
+n=$($W <<< "if (Test-Path D:\ClientPortalsTest\harness\log.txt) { (Get-Content D:\ClientPortalsTest\harness\log.txt).Count } else { 0 }" | tr -d '\r')
 $W <<< "schtasks /Run /TN ${CLIENTPORTALS_TASK:-ClientPortalsTest} | Out-Null; 'started'"
 for i in $(seq 1 90); do
-  out=$($W <<< "if (Test-Path D:\ClientPortalsTest\harness\log.txt) { Get-Content D:\ClientPortalsTest\harness\log.txt -Tail 1 }" | tr -d '\r')
-  echo "$out" | grep -q "starting world" && { echo "$out"; break; }
+  out=$($W <<< "if (Test-Path D:\ClientPortalsTest\harness\log.txt) { Get-Content D:\ClientPortalsTest\harness\log.txt | Select -Skip $n }" | tr -d '\r')
+  echo "$out" | grep -q -E "starting world|joining " && { echo "$out" | grep -E "starting world|joining "; break; }
   sleep 4
 done

@@ -22,7 +22,7 @@ n=$( [ -f "$R/.harness/log.txt" ] && wc -l < "$R/.harness/log.txt" || echo 0 )
 for i in $(seq 1 60); do
   sleep 3
   out=$(tail -n +$((n + 1)) "$R/.harness/log.txt" 2>/dev/null)
-  echo "$out" | grep -q "starting world\|! " && { echo "$out"; exit 0; }
+  echo "$out" | grep -q "starting world\|joining \|! " && { echo "$out"; exit 0; }
   pgrep -f "MacOS/Valheim( |$)" >/dev/null || { echo "the game exited"; tail -20 "$R/.harness/game.out"; exit 1; }
 done
 echo "TIMEOUT waiting for the world"; exit 1
