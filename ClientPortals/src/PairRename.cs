@@ -89,6 +89,12 @@ internal static class PairRename
 
     static void SetTag(ZDO zdo, string text)
     {
+        // Taken over first, as the game's own interactions do (ZNetView.ClaimOwnership). On a dedicated server, the
+        // renamed other end of a pair is unpaired by the server's Game.ConnectPortals: for a portal no connected player
+        // owns, the server becomes its owner and writes the connection itself, and that write can win over this
+        // client's change of the name (found in a two-client test; single player has no such race). Owned here, the
+        // server asks this client to change the connection instead (RPC_SetConnection).
+        if (!zdo.IsOwner()) zdo.SetOwner(ZDOMan.GetSessionID());
         zdo.Set(ZDOVars.s_tag, text);
         zdo.Set(ZDOVars.s_tagauthor, PlatformManager.DistributionPlatform.LocalUser.PlatformUserID.ToString());
         Journal.Refresh(zdo);
@@ -97,8 +103,12 @@ internal static class PairRename
     static void Apply(TeleportWorld portal, string text)
     {
         if (!portal || !portal.m_nview || !portal.m_nview.IsValid()) return;
-        var other = portal.m_nview.GetZDO().GetConnectionZDOID(ZDOExtraData.ConnectionType.Portal);
-        portal.SetText(text);
+        var zdo = portal.m_nview.GetZDO();
+        var other = zdo.GetConnectionZDOID(ZDOExtraData.ConnectionType.Portal);
+        // Both ends are renamed the same way, taken over and written here. The game's own rename (TeleportWorld.SetText)
+        // goes through the portal's owner and unpairs the portal until the server pairs it again; with the same name
+        // written on both ends at once, the server's pairing check keeps the pair as it is.
+        SetTag(zdo, text);
         if (!other.IsNone()) Plugin.Instance.StartCoroutine(RenameOther(other, text));
     }
 
@@ -119,9 +129,11 @@ internal static class PairRename
         }
         if (zdo == null || !zdo.IsValid())
         {
+            Debug.Log($"[{Plugin.Name}] pair rename: the other end {id} didn't come from the server");
             Plugin.Message(Texts.T("rename_failed"));
             yield break;
         }
         SetTag(zdo, text);
+        Debug.Log($"[{Plugin.Name}] pair rename: the other end {id} is now '{text}' (owner {zdo.GetOwner()}, revision {zdo.OwnerRevision}/{zdo.DataRevision})");
     }
 }

@@ -51,17 +51,15 @@ internal static class Learner
     {
         var id = portal.GetConnectionZDOID(ZDOExtraData.ConnectionType.Portal);
         if (id.IsNone()) return;
-        var other = ZDOMan.instance.GetZDO(id);
-        if (other != null)
-        {
-            Journal.Learn(other, announce: true);
-            return;
-        }
+        // asked for now and then even when this game has it: the server only sends changes of objects near a player,
+        // so a far end fetched earlier keeps its old name here (seen with two clients: a pair renamed by another player)
         if (!pairRequested.TryGetValue(id, out float at) || Time.time - at > PairRequestInterval)
         {
             pairRequested[id] = Time.time;
             ZDOMan.instance.RequestZDO(id);
         }
+        var other = ZDOMan.instance.GetZDO(id);
+        if (other != null) Journal.Learn(other, announce: true);
     }
 
     static void CheckMissing(Atlas atlas, Vector3 here, float nearby)
