@@ -187,6 +187,14 @@ static async Task PublishHexium(HttpClient http, JsonNode site, Release release,
     // Hidden versions (every upload until it is unhidden on hexium.gg) do not show here: the upload is refused then.
     await NotThereYet(http, Name, $"{url}/api/experimental/package/{team}/{release.Name}/{release.Version}/");
     await CategoriesExist(http, Name, $"{url}/api/experimental/community/{community}/category/", "name", categories);
+    // Hexium counts the manifest description in UTF-8 bytes, not characters: 232 characters with a Cyrillic part were
+    // 265 bytes, and the upload was refused after the other sites had taken the version.
+    const int DescriptionBytes = 256;
+    int bytes = System.Text.Encoding.UTF8.GetByteCount((string)JsonNode.Parse(release.Manifest)!["description"]!);
+    if (bytes > DescriptionBytes)
+    {
+        throw new InvalidOperationException($"{Name}: the manifest description is {bytes} bytes in UTF-8, at most {DescriptionBytes} are taken: shorten it (non-ASCII letters count 2-3 bytes each).");
+    }
     // The install-location labels are in the category list, but set-metadata refuses them as categories ("Unknown
     // category"): installLocation sets them.
     string[] locations = [.. categories.Where(c => c.StartsWith("Client", StringComparison.Ordinal) || c.StartsWith("Server", StringComparison.Ordinal))];
