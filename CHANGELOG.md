@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.3
+- Pressing Enter in the map view's search to travel to the one matching portal no longer opens the chat too.
+
 ## 0.1.2
 - Renaming both ends of a pair (`RenameBoth`) works on dedicated servers: the far end could keep its old name and the pair broke.
 - A pair renamed by another player shows its new name at the far end too, not only at the end next to you.

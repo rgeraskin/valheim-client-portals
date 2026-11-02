@@ -32,7 +32,7 @@ internal static class MapPicker
     }
 
     static TeleportWorld source;
-    static int openFrame;
+    static int openFrame, closedFrame = -100;
     static int cycleIndex = -1;
     static bool backToList;
     static readonly List<Marker> markers = new();
@@ -79,9 +79,10 @@ internal static class MapPicker
     /// <summary>
     /// With keyboard and mouse the view has the keys, like the list: typing goes to the search box, Tab to the list, Esc
     /// cancels; the game (the map key, Esc) and other mods' hotkeys don't see them. Dragging and the pin clicks are the
-    /// map's mouse, which stays; the wheel zoom is done here.
+    /// map's mouse, which stays; the wheel zoom is done here. Also the two frames after closing, so the key that closed
+    /// the view doesn't reach the game too (Enter that travels to the one match would open the chat).
     /// </summary>
-    public static bool BlocksInput => IsOpen && !Pad.Active;
+    public static bool BlocksInput => (IsOpen || Time.frameCount - closedFrame <= 2) && !Pad.Active;
 
     /// <summary>Letters typed while the search box doesn't have the keyboard: they go on in it.</summary>
     static readonly System.Text.StringBuilder typed = new();
@@ -134,6 +135,7 @@ internal static class MapPicker
     {
         if (!IsOpen) return;
         source = null;
+        closedFrame = Time.frameCount;
         focusSearchWhenFree = false;
         ListenToTyping(false);
         Show(false);
