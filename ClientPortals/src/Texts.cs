@@ -29,7 +29,7 @@ public static class Texts
         "empty_none", "empty_hidden", "empty_favorites", "empty_search", "new", "gone", "missing", "table_learned", "table_recorded", "table_count",
         "map_hint", "click", "right_click", "sort_nearest", "sort_farthest", "tab_ignored", "ignore", "empty_ignored", "ignored", "rename_both",
         "rename_failed", "rename", "rename_unreachable", "only_portals", "middle_click", "ignored_unnamed",
-        "portal_names",
+        "portal_names", "returned",
     };
 
     public static readonly Dictionary<string, string[]> Rows = new()
@@ -43,6 +43,7 @@ public static class Texts
             "The other portal is out of reach: only this one was renamed.",
             "Rename", "This portal is out of reach: visit it to rename it.", "Only portals", "Middle-click", "Unnamed portals are ignored. They are on the Ignored tab.",
             "Portal names",
+            "Portal $1 is gone, so you are back where you started. Removed from your list.",
         },
         ["Russian"] = new[]
         {
@@ -53,6 +54,7 @@ public static class Texts
             "Второй портал вне досягаемости: переименован только этот.",
             "Переименовать", "Портал вне досягаемости: посетите его, чтобы переименовать.", "Только порталы", "Средний клик", "Порталы без имени скрыты. Они на вкладке «Скрытые».",
             "Названия порталов",
+            "Портал $1 исчез, поэтому вы вернулись обратно. Удалён из списка.",
         },
         ["Ukrainian"] = new[]
         {
@@ -63,6 +65,7 @@ public static class Texts
             "Другий портал поза досяжністю: перейменовано лише цей.",
             "Перейменувати", "Портал поза досяжністю: відвідайте його, щоб перейменувати.", "Лише портали", "Середній клік", "Портали без назви приховано. Вони на вкладці «Приховані».",
             "Назви порталів",
+            "Портал $1 зник, тому ви повернулися назад. Вилучено зі списку.",
         },
         ["Bulgarian"] = new[]
         {
@@ -73,6 +76,7 @@ public static class Texts
             "Другият портал е недостъпен: преименуван е само този.",
             "Преименувай", "Порталът е недостъпен: посетете го, за да го преименувате.", "Само портали", "Среден клик", "Порталите без име са игнорирани. Ще ги намерите в раздела „Игнорирани“.",
             "Имена на порталите",
+            "Порталът $1 е изчезнал, затова се върнахте обратно. Премахнат от списъка.",
         },
         ["Macedonian"] = new[]
         {
@@ -83,6 +87,7 @@ public static class Texts
             "Другиот портал е недостапен: преименуван е само овој.",
             "Преименувај", "Порталот е недостапен: посетете го за да го преименувате.", "Само портали", "Среден клик", "Порталите без име се игнорирани. Ќе ги најдете во јазичето „Игнорирани“.",
             "Имиња на порталите",
+            "Порталот $1 исчезна, затоа се вративте назад. Отстранет од списокот.",
         },
         ["Serbian"] = new[]
         {
@@ -93,6 +98,7 @@ public static class Texts
             "Други портал је ван домета: преименован је само овај.",
             "Преименуј", "Портал је ван домашаја: посетите га да бисте га преименовали.", "Само портали", "Средњи клик", "Портали без назива се игноришу. Налазе се на картици „Игнорисани“.",
             "Имена портала",
+            "Портал $1 је нестао, па сте враћени назад. Уклоњен са листе.",
         },
         ["Croatian"] = new[]
         {
@@ -103,6 +109,7 @@ public static class Texts
             "Drugi portal je izvan dosega: preimenovan je samo ovaj.",
             "Preimenuj", "Portal je izvan dosega: posjetite ga da biste ga preimenovali.", "Samo portali", "Srednji klik", "Portali bez imena se zanemaruju. Nalaze se na kartici „Zanemareni”.",
             "Imena portala",
+            "Portal $1 je nestao, pa ste vraćeni natrag. Uklonjen s popisa.",
         },
         ["Polish"] = new[]
         {
@@ -113,6 +120,7 @@ public static class Texts
             "Drugi portal jest poza zasięgiem: zmieniono nazwę tylko tego.",
             "Zmień nazwę", "Portal jest poza zasięgiem: odwiedź go, aby zmienić jego nazwę.", "Tylko portale", "Środkowy klik", "Portale bez nazwy są ignorowane. Znajdziesz je na karcie „Ignorowane”.",
             "Nazwy portali",
+            "Portal $1 zniknął: powrót do punktu wyjścia. Usunięto z listy.",
         },
         ["Czech"] = new[]
         {
@@ -123,6 +131,7 @@ public static class Texts
             "Druhý portál je mimo dosah: přejmenován byl jen tento.",
             "Přejmenovat", "Portál je mimo dosah: navštivte ho, abyste ho mohli přejmenovat.", "Jen portály", "Prostřední klik", "Portály bez názvu jsou ignorovány. Najdete je na kartě „Ignorované“.",
             "Názvy portálů",
+            "Portál $1 zmizel: návrat na výchozí místo. Odebrán ze seznamu.",
         },
         ["Slovak"] = new[]
         {
@@ -133,6 +142,7 @@ public static class Texts
             "Druhý portál je mimo dosahu: premenovaný bol len tento.",
             "Premenovať", "Portál je mimo dosahu: navštívte ho, aby ste ho mohli premenovať.", "Len portály", "Stredný klik", "Portály bez názvu sú ignorované. Nájdete ich na karte „Ignorované“.",
             "Názvy portálov",
+            "Portál $1 zmizol: návrat na východiskové miesto. Odstránený zo zoznamu.",
         },
         ["German"] = new[]
         {
@@ -143,6 +153,7 @@ public static class Texts
             "Das andere Portal ist außer Reichweite: nur dieses wurde umbenannt.",
             "Umbenennen", "Dieses Portal ist außer Reichweite: Besuche es, um es umzubenennen.", "Nur Portale", "Mittelklick", "Unbenannte Portale werden ignoriert. Sie sind im Tab „Ignoriert“.",
             "Portalnamen",
+            "Portal $1 ist verschwunden, du bist zurück am Ausgangsort. Aus deiner Liste entfernt.",
         },
         ["Dutch"] = new[]
         {
@@ -153,6 +164,7 @@ public static class Texts
             "Het andere portaal is buiten bereik: alleen dit is hernoemd.",
             "Hernoemen", "Dit portaal is buiten bereik: bezoek het om het te hernoemen.", "Alleen portalen", "Middelklik", "Naamloze portalen worden genegeerd. Je vindt ze op het tabblad Genegeerd.",
             "Portaalnamen",
+            "Portaal $1 is verdwenen, je bent terug bij je vertrekpunt. Verwijderd uit je lijst.",
         },
         ["Swedish"] = new[]
         {
@@ -163,6 +175,7 @@ public static class Texts
             "Den andra portalen är utom räckhåll: bara den här fick nytt namn.",
             "Byt namn", "Portalen är utom räckhåll: besök den för att byta namn på den.", "Bara portaler", "Mittenklick", "Namnlösa portaler ignoreras. De finns under fliken Ignorerade.",
             "Portalnamn",
+            "Portalen $1 är borta, du är tillbaka där du startade. Borttagen från listan.",
         },
         ["Danish"] = new[]
         {
@@ -173,6 +186,7 @@ public static class Texts
             "Den anden portal er uden for rækkevidde: kun denne blev omdøbt.",
             "Omdøb", "Portalen er uden for rækkevidde: besøg den for at omdøbe den.", "Kun portaler", "Midterklik", "Navnløse portaler ignoreres. De ligger under fanen Ignorerede.",
             "Portalnavne",
+            "Portalen $1 er væk, du er tilbage, hvor du startede. Fjernet fra din liste.",
         },
         ["Norwegian"] = new[]
         {
@@ -183,6 +197,7 @@ public static class Texts
             "Den andre portalen er utenfor rekkevidde: bare denne fikk nytt navn.",
             "Gi nytt navn", "Portalen er utenfor rekkevidde: besøk den for å gi den nytt navn.", "Bare portaler", "Midtklikk", "Navnløse portaler ignoreres. De ligger under fanen Ignorerte.",
             "Portalnavn",
+            "Portalen $1 er borte, du er tilbake der du startet. Fjernet fra listen.",
         },
         ["Icelandic"] = new[]
         {
@@ -193,6 +208,7 @@ public static class Texts
             "Hin gáttin er utan seilingar: aðeins þessi var endurnefnd.",
             "Endurnefna", "Gáttin er utan seilingar: heimsæktu hana til að endurnefna hana.", "Aðeins gáttir", "Miðjusmella", "Nafnlausar gáttir eru hunsaðar. Þær eru á flipanum Hunsaðar.",
             "Heiti gátta",
+            "Gáttin $1 er horfin, þú ert aftur á upphafsstað. Fjarlægð af listanum.",
         },
         ["Finnish"] = new[]
         {
@@ -203,6 +219,7 @@ public static class Texts
             "Toinen portaali on ulottumattomissa: vain tämä nimettiin uudelleen.",
             "Nimeä uudelleen", "Portaali on ulottumattomissa: käy sen luona nimetäksesi sen uudelleen.", "Vain portaalit", "Keskinapsautus", "Nimettömät portaalit ohitetaan. Löydät ne Ohitetut-välilehdeltä.",
             "Portaalien nimet",
+            "Portaali $1 on poissa, joten palasit lähtöpaikkaan. Poistettu listalta.",
         },
         ["French"] = new[]
         {
@@ -213,6 +230,7 @@ public static class Texts
             "L'autre portail est hors de portée : seul celui-ci a été renommé.",
             "Renommer", "Ce portail est hors de portée : rendez-vous-y pour le renommer.", "Portails seuls", "Clic molette", "Les portails sans nom sont ignorés. Ils se trouvent dans l'onglet Ignorés.",
             "Noms des portails",
+            "Le portail $1 a disparu : retour au point de départ. Retiré de votre liste.",
         },
         ["Italian"] = new[]
         {
@@ -223,6 +241,7 @@ public static class Texts
             "L'altro portale è fuori portata: è stato rinominato solo questo.",
             "Rinomina", "Questo portale è fuori portata: visitalo per rinominarlo.", "Solo portali", "Clic centrale", "I portali senza nome sono ignorati. Si trovano nella scheda Ignorati.",
             "Nomi dei portali",
+            "Il portale $1 è scomparso: ritorno al punto di partenza. Rimosso dall'elenco.",
         },
         ["Spanish"] = new[]
         {
@@ -233,6 +252,7 @@ public static class Texts
             "El otro portal está fuera de alcance: solo se renombró este.",
             "Renombrar", "Este portal está fuera de alcance: visítalo para renombrarlo.", "Solo portales", "Clic central", "Los portales sin nombre se ignoran. Están en la pestaña Ignorados.",
             "Nombres de portales",
+            "El portal $1 ha desaparecido: vuelta al punto de partida. Eliminado de tu lista.",
         },
         ["Portuguese_European"] = new[]
         {
@@ -243,6 +263,7 @@ public static class Texts
             "O outro portal está fora de alcance: só este foi renomeado.",
             "Mudar o nome", "Este portal está fora de alcance: visite-o para lhe mudar o nome.", "Só portais", "Clique do meio", "Os portais sem nome são ignorados. Estão no separador Ignorados.",
             "Nomes dos portais",
+            "O portal $1 desapareceu: regresso ao ponto de partida. Removido da tua lista.",
         },
         ["Portuguese_Brazilian"] = new[]
         {
@@ -253,6 +274,7 @@ public static class Texts
             "O outro portal está fora de alcance: só este foi renomeado.",
             "Renomear", "Este portal está fora de alcance: visite-o para renomeá-lo.", "Só portais", "Clique do meio", "Os portais sem nome são ignorados. Eles estão na aba Ignorados.",
             "Nomes dos portais",
+            "O portal $1 sumiu: volta ao ponto de partida. Removido da sua lista.",
         },
         ["Romanian"] = new[]
         {
@@ -263,6 +285,7 @@ public static class Texts
             "Celălalt portal nu poate fi atins: doar acesta a fost redenumit.",
             "Redenumește", "Acest portal este în afara razei: vizitează-l pentru a-l redenumi.", "Doar portaluri", "Clic din mijloc", "Portalurile fără nume sunt ignorate. Le găsești în fila Ignorate.",
             "Numele portalurilor",
+            "Portalul $1 a dispărut: întoarcere la punctul de plecare. Eliminat din listă.",
         },
         ["Hungarian"] = new[]
         {
@@ -273,6 +296,7 @@ public static class Texts
             "A másik portál nem érhető el: csak ez lett átnevezve.",
             "Átnevezés", "Ez a portál elérhetetlen: látogasd meg, hogy átnevezhesd.", "Csak portálok", "Középső kattintás", "A névtelen portálok mellőzve vannak. A Mellőzöttek lapon találod őket.",
             "Portálnevek",
+            "A(z) $1 portál eltűnt, ezért visszakerültél a kiindulópontra. Eltávolítva a listáról.",
         },
         ["Lithuanian"] = new[]
         {
@@ -283,6 +307,7 @@ public static class Texts
             "Kitas portalas nepasiekiamas: pervadintas tik šis.",
             "Pervadinti", "Šis portalas nepasiekiamas: aplankykite jį, kad galėtumėte pervadinti.", "Tik portalai", "Vidurinis spustelėjimas", "Portalai be pavadinimo ignoruojami. Juos rasite skirtuke „Ignoruojami“.",
             "Portalų pavadinimai",
+            "Portalas $1 dingo: grįžimas į pradinę vietą. Pašalintas iš sąrašo.",
         },
         ["Latvian"] = new[]
         {
@@ -293,6 +318,7 @@ public static class Texts
             "Otrs portāls nav sasniedzams: pārdēvēts tikai šis.",
             "Pārdēvēt", "Šis portāls nav sasniedzams: apmeklējiet to, lai to pārdēvētu.", "Tikai portāli", "Vidējais klikšķis", "Portāli bez nosaukuma tiek ignorēti. Tie ir cilnē “Ignorētie”.",
             "Portālu nosaukumi",
+            "Portāls $1 ir pazudis: atgriešanās sākumpunktā. Noņemts no saraksta.",
         },
         ["Turkish"] = new[]
         {
@@ -303,6 +329,7 @@ public static class Texts
             "Diğer portala ulaşılamıyor: yalnızca bu yeniden adlandırıldı.",
             "Yeniden adlandır", "Bu geçit erişim dışında: yeniden adlandırmak için onu ziyaret edin.", "Yalnızca geçitler", "Orta tık", "Adsız geçitler yok sayılıyor. Yok sayılanlar sekmesindeler.",
             "Geçit adları",
+            "$1 portalı yok olmuş, başladığın yere geri döndün. Listenden kaldırıldı.",
         },
         ["Greek"] = new[]
         {
@@ -313,6 +340,7 @@ public static class Texts
             "Η άλλη πύλη είναι εκτός εμβέλειας: μετονομάστηκε μόνο αυτή.",
             "Μετονομασία", "Αυτή η πύλη είναι εκτός εμβέλειας: επισκεφθείτε την για να τη μετονομάσετε.", "Μόνο πύλες", "Μεσαίο κλικ", "Οι πύλες χωρίς όνομα αγνοούνται. Βρίσκονται στην καρτέλα Αγνοημένες.",
             "Ονόματα πυλών",
+            "Η πύλη $1 χάθηκε, οπότε επιστρέψατε στο σημείο εκκίνησης. Αφαιρέθηκε από τη λίστα σας.",
         },
         ["Georgian"] = new[]
         {
@@ -323,6 +351,7 @@ public static class Texts
             "მეორე პორტალი მიუწვდომელია: სახელი მხოლოდ ამას შეეცვალა.",
             "გადარქმევა", "ეს პორტალი მიუწვდომელია: ეწვიეთ მას, რომ სახელი გადაარქვათ.", "მხოლოდ პორტალები", "შუა დაწკაპუნება", "უსახელო პორტალები იგნორირებულია. ისინი „იგნორირებულის“ ჩანართზეა.",
             "პორტალების სახელები",
+            "პორტალი $1 გაქრა, ამიტომ საწყის ადგილას დაბრუნდით. ამოშლილია სიიდან.",
         },
         ["Hindi"] = new[]
         {
@@ -333,6 +362,7 @@ public static class Texts
             "दूसरा पोर्टल पहुँच से बाहर है: केवल इसी का नाम बदला गया।",
             "नाम बदलें", "यह पोर्टल पहुँच से बाहर है: इसका नाम बदलने के लिए वहाँ जाएँ।", "केवल पोर्टल", "मिडल-क्लिक", "बिना नाम वाले पोर्टल अनदेखे हैं। वे अनदेखे टैब में हैं।",
             "पोर्टल के नाम",
+            "पोर्टल $1 गायब हो गया, इसलिए आप शुरुआती जगह पर लौट आए। आपकी सूची से हटाया गया।",
         },
         ["Thai"] = new[]
         {
@@ -343,6 +373,7 @@ public static class Texts
             "พอร์ทัลอีกฝั่งอยู่นอกระยะ: เปลี่ยนชื่อเฉพาะฝั่งนี้",
             "เปลี่ยนชื่อ", "พอร์ทัลนี้อยู่นอกระยะ: ไปที่พอร์ทัลเพื่อเปลี่ยนชื่อ", "เฉพาะพอร์ทัล", "คลิกกลาง", "พอร์ทัลที่ไม่มีชื่อถูกละเว้น อยู่ในแท็บที่ละเว้น",
             "ชื่อพอร์ทัล",
+            "พอร์ทัล $1 หายไปแล้ว คุณจึงกลับมาที่จุดเริ่มต้น นำออกจากรายการแล้ว",
         },
         ["Chinese"] = new[]
         {
@@ -353,6 +384,7 @@ public static class Texts
             "另一端传送门不可达:只重命名了这一个。",
             "重命名", "此传送门不在范围内：前往该传送门后才能重命名。", "仅传送门", "中键单击", "未命名的传送门已忽略，可在“已忽略”标签页中找到。",
             "传送门名称",
+            "传送门 $1 已消失，你已返回出发点。已从列表中移除。",
         },
         ["Chinese_Trad"] = new[]
         {
@@ -363,6 +395,7 @@ public static class Texts
             "另一端傳送門無法觸及:只重新命名了這一個。",
             "重新命名", "此傳送門不在範圍內：前往該傳送門後才能重新命名。", "僅傳送門", "中鍵點擊", "未命名的傳送門已忽略，可在「已忽略」分頁中找到。",
             "傳送門名稱",
+            "傳送門 $1 已消失，你已返回出發點。已從清單中移除。",
         },
         ["Japanese"] = new[]
         {
@@ -373,6 +406,7 @@ public static class Texts
             "もう一方のポータルに届きません:このポータルだけ名前を変更しました。",
             "名前を変更", "このポータルは範囲外です。名前を変更するには訪れてください。", "ポータルのみ", "中クリック", "名前のないポータルは無視されます。「無視中」タブにあります。",
             "ポータル名",
+            "ポータル $1 は消えたため、出発地点に戻りました。リストから削除しました。",
         },
         ["Korean"] = new[]
         {
@@ -383,6 +417,7 @@ public static class Texts
             "다른 포털에 닿을 수 없어 이 포털만 이름을 바꿨습니다.",
             "이름 변경", "이 포털은 범위 밖에 있습니다. 이름을 바꾸려면 방문하세요.", "포털만", "가운데 클릭", "이름 없는 포털은 무시됩니다. 무시됨 탭에 있습니다.",
             "포털 이름",
+            "포털 $1이(가) 사라져 출발 지점으로 돌아왔습니다. 목록에서 제거했습니다.",
         },
     };
 

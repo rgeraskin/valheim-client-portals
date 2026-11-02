@@ -102,6 +102,22 @@ internal static class Journal
         return true;
     }
 
+    /// <summary>
+    /// A known portal turned up elsewhere (moved, or rebuilt nearby under its name): the old place is forgotten, the new
+    /// one learned, and it stays a favorite or ignored.
+    /// </summary>
+    public static void Moved(PortalPos from, ZDO now)
+    {
+        if (!Ensure()) return;
+        var to = PortalPos.Of(now.GetPosition());
+        if (to == from) return;
+        if (favorites.Remove(from)) favorites.Add(to);
+        if (ignored.Remove(from)) ignored.Add(to);
+        atlas.Forget(from, Now);
+        Learn(now, announce: false);
+        Save();
+    }
+
     /// <summary>Takes in what a cartography table holds. Returns how many portals were learned.</summary>
     public static int Merge(IEnumerable<PortalEntry> entries)
     {

@@ -1,6 +1,6 @@
 # ClientPortals
 
-Pick your portal destination from a list or on the map. No more tag pairing, no more portal hubs. Learn portals by exploring, and **share them with your friends at the cartography table**. Fully playable with a **gamepad** (Steam Deck included), and built from the game's own UI, so it looks and sounds like part of Valheim.
+Pick your portal destination from a list or on the map. No need for tag pairs or portal hubs anymore, though vanilla pairs keep working. Learn portals by exploring, and **share them with your friends at the cartography table**. Fully playable with a **gamepad** (Steam Deck included), and built from the game's own UI, so it looks and sounds like part of Valheim.
 
 **100% client-side.** Nothing to install on the server: it works on any dedicated server, on a friend's local host and in single player, and the other players don't need it either. Anyone who installs it can use it.
 
@@ -23,6 +23,8 @@ You learn a portal by:
 | **Cartography table** | Read the map to learn every portal recorded on the table, write it to record yours                           |
 
 Single player and local hosts know every portal in the world from the start (configurable).
+
+**Moved or destroyed portals don't strand you.** A known portal destroyed anywhere while you play leaves your list at once. If one went while you weren't around, the trip checks the destination under the loading screen: a portal rebuilt nearby under the same name takes you in (and replaces the old one in your list, favorite kept); with none, you come back to the portal you left from, and the old one leaves your list.
 
 ## The list
 

@@ -8,6 +8,7 @@ internal static class PortalWorld
 {
     /// <summary>The id each portal has in this session, so travel can ask the server for a portal that isn't loaded.</summary>
     static readonly Dictionary<PortalPos, ZDOID> sessionIds = new();
+    static readonly Dictionary<ZDOID, PortalPos> keysById = new();
     static ZDOMan sessionOf;
 
     public static bool IsPortal(ZDO zdo) =>
@@ -23,15 +24,51 @@ internal static class PortalWorld
         if (sessionOf != ZDOMan.instance)
         {
             sessionIds.Clear();
+            keysById.Clear();
             sessionOf = ZDOMan.instance;
         }
-        sessionIds[PortalPos.Of(zdo.GetPosition())] = zdo.m_uid;
+        var key = PortalPos.Of(zdo.GetPosition());
+        sessionIds[key] = zdo.m_uid;
+        keysById[zdo.m_uid] = key;
     }
 
     public static bool TryGetSessionId(PortalPos key, out ZDOID id)
     {
         id = ZDOID.None;
         return sessionOf == ZDOMan.instance && sessionIds.TryGetValue(key, out id);
+    }
+
+    /// <summary>The known portal an object id of this session stood for (the server tells every client about every destroyed object).</summary>
+    public static bool TryGetKey(ZDOID id, out PortalPos key)
+    {
+        key = default;
+        return sessionOf == ZDOMan.instance && keysById.TryGetValue(id, out key);
+    }
+
+    /// <summary>The portal object that stood at <paramref name="key"/> when this session saw it, wherever it is now (a mod may move it).</summary>
+    public static ZDO BySessionId(PortalPos key)
+    {
+        if (ZDOMan.instance == null || !TryGetSessionId(key, out var id)) return null;
+        var zdo = ZDOMan.instance.GetZDO(id);
+        return IsPortal(zdo) ? zdo : null;
+    }
+
+    /// <summary>The loaded portal named <paramref name="name"/> nearest to <paramref name="pos"/> within <paramref name="radius"/>: where a portal went when it was rebuilt nearby.</summary>
+    public static ZDO NearestNamed(string name, Vector3 pos, float radius)
+    {
+        ZDO best = null;
+        float bestDistance = radius;
+        foreach (var zdo in Loaded())
+        {
+            if (!IsPortal(zdo) || Tag(zdo) != name) continue;
+            float d = Utils.DistanceXZ(pos, zdo.GetPosition());
+            if (d <= bestDistance)
+            {
+                best = zdo;
+                bestDistance = d;
+            }
+        }
+        return best;
     }
 
     /// <summary>The portal object at <paramref name="key"/> if this game has it loaded.</summary>

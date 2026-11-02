@@ -515,6 +515,34 @@ public class Harness : BaseUnityPlugin
                 break;
             case "time": EnvMan.instance.m_debugTime = F(a[0]); break;
             case "env": EnvMan.instance.m_debugEnv = a[0]; break;
+            case "ghost":
+                {
+                    // ghost <x> <z> <yaw> <name...>: a known portal where none stands (as if destroyed or moved while nobody with the mod saw it)
+                    var pos = new Vector3(F(a[0]), 0, F(a[1]));
+                    pos.y = Mathf.Max(WorldGenerator.instance.GetHeight(pos.x, pos.z), ZoneSystem.instance.m_waterLevel + 0.5f);
+                    var tag = string.Join(" ", a.Skip(3));
+                    Journal.Current.Observe(pos, Quaternion.Euler(0, F(a[2]), 0), tag, Journal.Now);
+                    Journal.Save();
+                    Log($"ghost '{tag}' at {pos}");
+                    break;
+                }
+            case "destroyportal":
+                {
+                    // destroyportal <name...>: destroys that portal object wherever it is, like another player far away
+                    var tag = string.Join(" ", a);
+                    var zdo = PortalWorld.Loaded().FirstOrDefault(z => PortalWorld.IsPortal(z) && PortalWorld.Tag(z) == tag);
+                    if (zdo == null) { Log("no portal " + tag); break; }
+                    var at = zdo.GetPosition();
+                    var view = ZNetScene.instance.FindInstance(zdo);
+                    if (view) ZNetScene.instance.Destroy(view.gameObject);
+                    else
+                    {
+                        zdo.SetOwner(ZDOMan.GetSessionID());
+                        ZDOMan.instance.DestroyZDO(zdo);
+                    }
+                    Log($"destroyed '{tag}' at {at} (loaded={(bool)view})");
+                    break;
+                }
             case "favorite":
                 {
                     var tag = string.Join(" ", a);
