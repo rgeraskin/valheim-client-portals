@@ -151,3 +151,5 @@ This mod — code, translations, tests, images and this text — was made entire
 ## License
 
 MIT, see [LICENSE](https://github.com/rgeraskin/valheim-client-portals/blob/master/LICENSE). Source code: [github.com/rgeraskin/valheim-client-portals](https://github.com/rgeraskin/valheim-client-portals).
+
+Found a bug or have an idea? Please report it on the [GitHub issues page](https://github.com/rgeraskin/valheim-client-portals/issues).
