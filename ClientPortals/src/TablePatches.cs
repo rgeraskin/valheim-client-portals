@@ -48,11 +48,28 @@ internal static class TablePatches
             Plugin.Message(Texts.T("table_learned", learned.ToString()), MessageHud.MessageType.TopLeft);
     }
 
+    static bool CanWrite(MapTable table, Humanoid user, ItemDrop.ItemData item) =>
+        item == null && user == Player.m_localPlayer && Enabled(table) && PrivateArea.CheckAccess(table.transform.position, flash: false);
+
+    /// <summary>
+    /// The writer takes the table over before the game writes the map. The game sends the map to the table's owner
+    /// (RPC "MapData"), which stores it on the table object; an object travels whole, so another player who owned the
+    /// table stored its old atlas along with the map, and that copy beat the atlas written here (two-client test: the
+    /// second writer's portals were lost). Owned here, the game's map write runs here too. Players without the mod
+    /// write the map as usual, through whoever owns the table.
+    /// </summary>
+    [HarmonyPrefix, HarmonyPatch(nameof(MapTable.OnWrite))]
+    static void ClaimForWrite(MapTable __instance, Humanoid user, ItemDrop.ItemData item)
+    {
+        if (CanWrite(__instance, user, item)) __instance.m_nview.ClaimOwnership();
+    }
+
     /// <summary>The table keeps the newer copy of every portal from both sides (removals included).</summary>
     [HarmonyPostfix, HarmonyPatch(nameof(MapTable.OnWrite))]
     static void Write(MapTable __instance, Humanoid user, ItemDrop.ItemData item, bool __result)
     {
-        if (!__result || item != null || user != Player.m_localPlayer || !Enabled(__instance)) return;
+        // the game also returns true when a ward refuses the write
+        if (!__result || !CanWrite(__instance, user, item)) return;
         var zdo = __instance.m_nview.GetZDO();
         var table = ReadTable(zdo);
         Journal.Merge(table.All);

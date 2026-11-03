@@ -26,6 +26,8 @@ internal static class Journal
     static readonly HashSet<PortalPos> ignored = new();
     /// <summary>Unnamed portals all share one (empty) name: they are ignored together.</summary>
     static bool ignoreUnnamed;
+    /// <summary>The data revision of every portal object this game last looked at (<see cref="Learn"/>).</summary>
+    static readonly Dictionary<ZDOID, uint> seenRevision = new();
 
     /// <summary>The atlas of the local player in the current world, or null outside a game.</summary>
     public static Atlas Current => Ensure() ? atlas : null;
@@ -47,6 +49,7 @@ internal static class Journal
         world = uid;
         favorites.Clear();
         ignored.Clear();
+        seenRevision.Clear();
         ignoreUnnamed = false;
         var data = player.m_customData;
         if (data.TryGetValue(AtlasKeyPrefix + uid, out var saved))
@@ -77,8 +80,17 @@ internal static class Journal
         if (a == null || !PortalWorld.IsPortal(zdo)) return false;
         PortalWorld.Remember(zdo);
         var key = PortalPos.Of(zdo.GetPosition());
+        bool known = a.TryGet(key, out var before) && !before.Removed;
+        // a client keeps the far objects it was sent once, and the server stops updating them when no player is near:
+        // such a copy must not undo newer news (a pair renamed elsewhere, read from a cartography table) by being seen
+        // again with today's stamp. A known portal is updated only from data that changed since this game last looked
+        // at the object (two-client test: a far copy of a renamed pair put the old name back a second after the table
+        // brought the new one, and the next write spread it)
+        uint revision = zdo.DataRevision;
+        if (known && seenRevision.TryGetValue(zdo.m_uid, out var seen) && seen == revision) return false;
+        seenRevision[zdo.m_uid] = revision;
         string name = PortalWorld.Tag(zdo);
-        bool changed = !a.TryGet(key, out var before) || before.Removed || before.Name != name;
+        bool changed = !known || before.Name != name;
         bool learned = a.Observe(zdo.GetPosition(), zdo.GetRotation(), name, Now);
         if (changed || learned) Save();
         if (learned && announce)

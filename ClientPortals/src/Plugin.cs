@@ -10,7 +10,7 @@ public class Plugin : BaseUnityPlugin
 {
     public const string Guid = "rgeraskin.ClientPortals";
     public const string Name = "ClientPortals";
-    public const string Version = "0.1.3";
+    public const string Version = "0.1.4";
 
     public static Plugin Instance { get; private set; }
 

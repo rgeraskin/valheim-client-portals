@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.4
+- Cartography tables in multiplayer: when two players wrote to the same table, the second player's portals could be lost. Both lists now end up on the table.
+- A pair renamed by another player while you were far away no longer gets its old name back after you learn the new one from a table, and you no longer spread the old name with your next write.
+- Writing to a table where a ward refuses you no longer records portals there.
+
 ## 0.1.3
 - Pressing Enter in the map view's search to travel to the one matching portal no longer opens the chat too.
 
