@@ -132,7 +132,7 @@ English, Bulgarian, Chinese (simplified and traditional), Croatian, Czech, Danis
 
 Needs only [BepInExPack Valheim](https://thunderstore.io/c/valheim/p/denikson/BepInExPack_Valheim/). Install with a mod manager, or put `ClientPortals.dll` into `BepInEx/plugins`. Only you need it: not the server, not the other players.
 
-Tested on Valheim 1.0.21 with BepInExPack 5.4.2351, in single player on Windows and macOS, with keyboard and mouse and with a gamepad; also with Zen.ModLib.
+Tested on Valheim 1.0.21 with BepInExPack 5.4.2351 on Windows and macOS, with keyboard and mouse and with a gamepad: in single player, on dedicated servers (also with crossplay), in player-hosted games, and alongside players who don't have the mod; also with Zen.ModLib.
 
 ## Development
 
