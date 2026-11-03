@@ -40,6 +40,8 @@ public class Harness : BaseUnityPlugin
     /// <summary>host:port of a dedicated server to join instead of loading a local world (multiplayer tests).</summary>
     static string JoinAddress => Env("CLIENTPORTALS_JOIN", "");
     static string JoinPassword => Env("CLIENTPORTALS_PASSWORD", "");
+    /// <summary>1: the local world is hosted open, so a second client joins over the LAN (a player-hosted game; not listed, no password).</summary>
+    static bool OpenWorld => Env("CLIENTPORTALS_OPEN", "0") == "1";
 
     void Awake()
     {
@@ -181,7 +183,9 @@ public class Harness : BaseUnityPlugin
         done(true);
     }
 
-    // joins a dedicated server like the game's -joinserverwithcharacter and -password options
+    // joins a game like the game's -joinserverwithcharacter and -password options: ip:port (a dedicated server),
+    // steam:<SteamID64> (a player's game: its host listens on Steam only, not on an IP port) or code:<join code> (a
+    // crossplay game, through PlayFab: the code is in the server's log, "registered with join code")
     IEnumerator JoinWorld(string address)
     {
         bool ok = false;
@@ -189,7 +193,32 @@ public class Harness : BaseUnityPlugin
         if (!ok) yield break;
         var fs = FejdStartup.instance;
         FejdStartup.ServerPassword = JoinPassword.Length > 0 ? JoinPassword : null;
-        fs.m_joinServer = new ServerJoinData(new ServerJoinDataDedicated(address));
+        var target = default(ServerJoinData);
+        bool resolved = !address.StartsWith("code:");
+        if (address.StartsWith("code:"))
+        {
+            // as the game's -joincode does (FejdStartup.AutoJoinServer); tried again while PlayFab is still logging in
+            for (int attempt = 1; attempt <= 6 && !resolved; attempt++)
+            {
+                bool done = false;
+                ZPlayFabMatchmaking.ResolveJoinCode(address.Substring(5),
+                    data => { target = new ServerJoinData(new ServerJoinDataPlayFabUser(data.remotePlayerId)); resolved = done = true; },
+                    reason => { Log($"join code {address.Substring(5)}: {reason} (attempt {attempt})"); done = true; });
+                float until = Time.realtimeSinceStartup + 20f;
+                while (!done && Time.realtimeSinceStartup < until) yield return new WaitForSecondsRealtime(0.25f);
+                if (!resolved) yield return new WaitForSecondsRealtime(5f);
+            }
+            if (!resolved)
+            {
+                Log("! join code " + address.Substring(5) + " not resolved");
+                yield break;
+            }
+        }
+        else
+            target = address.StartsWith("steam:")
+                ? new ServerJoinData(new ServerJoinDataSteamUser(ulong.Parse(address.Substring(6))))
+                : new ServerJoinData(new ServerJoinDataDedicated(address));
+        fs.m_joinServer = target;
         // the last attempt's error stays until the next one sets a status: waitplayer would read it as this one's
         ZNet.m_externalError = ZNet.ConnectionStatus.None;
         ZNet.m_connectionStatus = ZNet.ConnectionStatus.None;
@@ -215,11 +244,11 @@ public class Harness : BaseUnityPlugin
             Log("created local world " + WorldName);
         }
         fs.m_world = world;
-        fs.m_openServerToggle.isOn = false;
+        fs.m_openServerToggle.isOn = OpenWorld;
         fs.m_publicServerToggle.isOn = false;
         fs.m_crossplayServerToggle.isOn = false;
         fs.OnWorldStart();
-        Log($"starting world {WorldName} as {CharName}");
+        Log($"starting world {WorldName} as {CharName}{(OpenWorld ? " (open to the LAN)" : "")}");
     }
 
     // ------------------------------------------------------------------ commands
@@ -615,7 +644,10 @@ public class Harness : BaseUnityPlugin
                 {
                     // destroyportal <name...>: destroys that portal object wherever it is, like another player far away
                     var tag = string.Join(" ", a);
-                    var zdo = PortalWorld.Loaded().FirstOrDefault(z => PortalWorld.IsPortal(z) && PortalWorld.Tag(z) == tag);
+                    // the nearest of that name: the list also holds far objects this game was sent (the other end of a
+                    // pair, everything on a host), and the first match was often the other end of the pair, not this one
+                    var zdo = PortalWorld.Loaded().Where(z => PortalWorld.IsPortal(z) && PortalWorld.Tag(z) == tag)
+                        .OrderBy(z => Vector3.Distance(z.GetPosition(), player.transform.position)).FirstOrDefault();
                     if (zdo == null) { Log("no portal " + tag); break; }
                     var at = zdo.GetPosition();
                     var view = ZNetScene.instance.FindInstance(zdo);
