@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.5
+- Description update only; the mod itself is unchanged. Bugs and ideas can now also go to the chat for my mods, on [Discord](https://discord.gg/hxpuTQF2Bb) or [Telegram](https://t.me/+NwReoOS9x7hhYjgy); the GitHub issues page stays.
+
 ## 0.1.4
 - Cartography tables in multiplayer: when two players wrote to the same table, the second player's portals could be lost. Both lists now end up on the table.
 - A pair renamed by another player while you were far away no longer gets its old name back after you learn the new one from a table, and you no longer spread the old name with your next write.

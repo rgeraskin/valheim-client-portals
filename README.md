@@ -134,6 +134,10 @@ Needs only [BepInExPack Valheim](https://thunderstore.io/c/valheim/p/denikson/Be
 
 Tested on Valheim 1.0.21 with BepInExPack 5.4.2351 on Windows and macOS, with keyboard and mouse and with a gamepad: in single player, on dedicated servers (also with crossplay), in player-hosted games, and alongside players who don't have the mod; also with Zen.ModLib.
 
+## Bugs and ideas
+
+Found a bug or have an idea? Tell me on the [GitHub issues page](https://github.com/rgeraskin/valheim-client-portals/issues) or in the chat for my mods, on [Discord](https://discord.gg/hxpuTQF2Bb) or [Telegram](https://t.me/+NwReoOS9x7hhYjgy).
+
 ## Development
 
 Built with dotnet from [mise](https://mise.jdx.dev): `mise run build`, `mise run test` (unit tests), `mise run package` (the mod's zip). The architecture and the in-game test harness are described in [CLAUDE.md](https://github.com/rgeraskin/valheim-client-portals/blob/master/CLAUDE.md).
@@ -151,5 +155,3 @@ This mod — code, translations, tests, images and this text — was made entire
 ## License
 
 MIT, see [LICENSE](https://github.com/rgeraskin/valheim-client-portals/blob/master/LICENSE). Source code: [github.com/rgeraskin/valheim-client-portals](https://github.com/rgeraskin/valheim-client-portals).
-
-Found a bug or have an idea? Please report it on the [GitHub issues page](https://github.com/rgeraskin/valheim-client-portals/issues).
